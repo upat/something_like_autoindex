@@ -10,7 +10,7 @@ import sys, json, os, urllib.parse
 rootPath = os.getcwd()
 # リクエストされたパス(相対) URL用に多バイト文字がエンコードされているのでデコードも行う
 nowDir = sys.stdin.read()
-nowDir = urllib.parse.unquote(nowDir)
+nowDir = urllib.parse.unquote_plus(nowDir)
 
 if nowDir == '/': # 初回起動の場合
 	fullPath = rootPath + nowDir
@@ -33,6 +33,8 @@ for i in os.listdir(fullPath):
 		dirNameArray.append(i) # フォルダ一覧
 	elif os.path.isfile(fullPath + i) and (fullPath + i).rfind('.mp4') > -1:
 		fileNameArray.append(i) # ファイル一覧
+	# elif os.path.isfile(fullPath + i) and (fullPath + i).rfind('.m3u8') > -1:
+	#	fileNameArray.append(i) # ファイル一覧
 
 # JSONデータ生成(現在のディレクトリ, ディレクトリ一覧, ファイル一覧)
 postJSONData = { 'debug' : fullPath, 'parDir' : parDir, 'nowDir' : nowDir, 'dir' : dirNameArray, 'file' : fileNameArray }
