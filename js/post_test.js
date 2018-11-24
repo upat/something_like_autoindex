@@ -7,6 +7,32 @@ d3.select('body')
 		'readonly' : ''
 	});
 
+// ポップアップ時の背景
+d3.select('body')
+	.append('div')
+	.attrs({
+		'id' : 'layer'
+	})
+// ポップアップ時の要素
+d3.select('body')
+	.append('div')
+	.attrs({
+		'id' : 'popup'
+	})
+	.append('div')
+	.attrs({
+		'id' : 'popup_area'
+	});
+// ポップアップ表示ボタン
+d3.select('body')
+	.append('form')
+	.append('input')
+	.attrs({
+		'type'  : 'button',
+		'id'    : 'hdd',
+		'value' : 'HDD_info'
+	});
+
 // リンク表示領域の設置 
 d3.select('body')
 	.append('div')
@@ -184,3 +210,60 @@ function display_file(filename, path){
 			'type' : 'application/x-mpegURL'
 	});
 }
+
+// HDD情報の取得・表示を行う
+function get_hdd_info(){
+	// ポップアップ内テキスト領域の初期化
+	d3.select('#popup_area').remove();
+	// ポップアップ内テキスト領域の再生成
+	d3.select('#popup')
+		.append('div')
+		.attrs({
+			'id' : 'popup_area'
+		});
+
+	// pythonと通信を行いHDD情報を受け取る
+	$.ajax({
+		type     : 'POST',
+		url      : '/cgi-bin/hdd_info.py',
+		dataType : 'text',
+	}).done(function(data){
+		try{
+			data = $.parseJSON(data); // 文字列で返ってきたJSONデータをJSON化
+		}catch(e){
+			console.log(e);
+			return;
+		}
+		
+		// テキスト要素の設置
+		let p_area = d3.select('#popup_area');
+		p_area.append('p').text('温度　　　　　　　　　　：' + data.temp);
+		p_area.append('p').text('代替処理済みのセクタ数　：' + data.rs_ct);
+		p_area.append('p').text('代替処理保留中のセクタ数：' + data.cps);
+		p_area.append('p').text('全ディスク容量　　　　　：' + data.total);
+		p_area.append('p').text('残りディスク容量　　　　：' + data.free);
+		p_area.append('form')
+			.append('input')
+			.attrs({
+				'type'  : 'button',
+				'id'    : 'close',
+				'value' : 'OK',
+				'margin': '0px'
+			});
+		
+		// OKボタンを押した際の動作(ポップアップ要素の非表示)
+		$(function(){
+			$('#close, #layer').click(function(e) {
+				$('#popup, #layer').hide();
+			});		
+		});
+	});
+}
+
+// HDD_infoボタンを押した際の動作(ポップアップ要素の表示)
+$(function(){
+	$('#hdd').click(function(e){
+		get_hdd_info();
+		$('#popup, #layer').show();
+	});
+});
