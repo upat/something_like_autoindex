@@ -1,0 +1,13 @@
+@font-face {
+	font-family: 'rounded-mplus';
+	src: url('/font/rounded-mplus-1c-medium.ttf') format('truetype');
+	font-display: swap;
+}
+
+body {
+	-webkit-text-size-adjust: 100%;
+	width: 100%;
+	overflow: hidden;
+	font-size: 24px;
+	font-family: 'rounded-mplus', '游ゴシック Regular', 'メイリオ';
+}
