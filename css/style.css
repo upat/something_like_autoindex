@@ -7,6 +7,7 @@
 body {
 	-webkit-text-size-adjust: 100%;
 	width: 100%;
+	height: 100%
 	overflow: hidden;
 	font-size: 24px;
 	font-family: 'rounded-mplus', '游ゴシック Regular', 'メイリオ';
